@@ -1,9 +1,12 @@
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useState } from 'react';
+import AuthModal from '@/components/AuthModal';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authDefaultTab, setAuthDefaultTab] = useState<'login' | 'register'>('login');
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -11,6 +14,11 @@ const Header = () => {
       element.scrollIntoView({ behavior: 'smooth' });
       setIsMenuOpen(false);
     }
+  };
+
+  const openAuthModal = (tab: 'login' | 'register') => {
+    setAuthDefaultTab(tab);
+    setIsAuthModalOpen(true);
   };
 
   return (
@@ -41,6 +49,10 @@ const Header = () => {
             <button onClick={() => scrollToSection('contacts')} className="text-foreground hover:text-primary transition-colors">
               Контакты
             </button>
+            <Button variant="ghost" onClick={() => openAuthModal('login')}>
+              <Icon name="User" size={18} className="mr-2" />
+              Войти
+            </Button>
             <Button onClick={() => scrollToSection('form')} className="bg-primary hover:bg-primary/90">
               Подобрать психолога
             </Button>
@@ -74,12 +86,22 @@ const Header = () => {
             <button onClick={() => scrollToSection('contacts')} className="text-left py-2 text-foreground hover:text-primary transition-colors">
               Контакты
             </button>
-            <Button onClick={() => scrollToSection('form')} className="bg-primary hover:bg-primary/90 w-full mt-2">
+            <Button variant="outline" onClick={() => openAuthModal('login')} className="w-full mt-2">
+              <Icon name="User" size={18} className="mr-2" />
+              Войти
+            </Button>
+            <Button onClick={() => scrollToSection('form')} className="bg-primary hover:bg-primary/90 w-full">
               Подобрать психолога
             </Button>
           </nav>
         )}
       </div>
+
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)}
+        defaultTab={authDefaultTab}
+      />
     </header>
   );
 };
