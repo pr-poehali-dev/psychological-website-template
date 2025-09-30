@@ -2,11 +2,14 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useState } from 'react';
 import AuthModal from '@/components/AuthModal';
+import UserProfile from '@/components/UserProfile';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authDefaultTab, setAuthDefaultTab] = useState<'login' | 'register'>('login');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -19,6 +22,11 @@ const Header = () => {
   const openAuthModal = (tab: 'login' | 'register') => {
     setAuthDefaultTab(tab);
     setIsAuthModalOpen(true);
+  };
+
+  const handleAuthSuccess = () => {
+    setIsLoggedIn(true);
+    setIsAuthModalOpen(false);
   };
 
   return (
@@ -49,10 +57,17 @@ const Header = () => {
             <button onClick={() => scrollToSection('contacts')} className="text-foreground hover:text-primary transition-colors">
               Контакты
             </button>
-            <Button variant="ghost" onClick={() => openAuthModal('login')}>
-              <Icon name="User" size={18} className="mr-2" />
-              Войти
-            </Button>
+            {!isLoggedIn ? (
+              <Button variant="ghost" onClick={() => openAuthModal('login')}>
+                <Icon name="User" size={18} className="mr-2" />
+                Войти
+              </Button>
+            ) : (
+              <Button variant="ghost" onClick={() => setIsProfileOpen(true)}>
+                <Icon name="User" size={18} className="mr-2" />
+                Профиль
+              </Button>
+            )}
             <Button onClick={() => scrollToSection('form')} className="bg-primary hover:bg-primary/90">
               Подобрать психолога
             </Button>
@@ -86,10 +101,17 @@ const Header = () => {
             <button onClick={() => scrollToSection('contacts')} className="text-left py-2 text-foreground hover:text-primary transition-colors">
               Контакты
             </button>
-            <Button variant="outline" onClick={() => openAuthModal('login')} className="w-full mt-2">
-              <Icon name="User" size={18} className="mr-2" />
-              Войти
-            </Button>
+            {!isLoggedIn ? (
+              <Button variant="outline" onClick={() => openAuthModal('login')} className="w-full mt-2">
+                <Icon name="User" size={18} className="mr-2" />
+                Войти
+              </Button>
+            ) : (
+              <Button variant="outline" onClick={() => setIsProfileOpen(true)} className="w-full mt-2">
+                <Icon name="User" size={18} className="mr-2" />
+                Профиль
+              </Button>
+            )}
             <Button onClick={() => scrollToSection('form')} className="bg-primary hover:bg-primary/90 w-full">
               Подобрать психолога
             </Button>
@@ -101,6 +123,12 @@ const Header = () => {
         isOpen={isAuthModalOpen} 
         onClose={() => setIsAuthModalOpen(false)}
         defaultTab={authDefaultTab}
+        onAuthSuccess={handleAuthSuccess}
+      />
+
+      <UserProfile 
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
       />
     </header>
   );

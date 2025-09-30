@@ -12,9 +12,10 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultTab?: 'login' | 'register';
+  onAuthSuccess?: () => void;
 }
 
-const AuthModal = ({ isOpen, onClose, defaultTab = 'login' }: AuthModalProps) => {
+const AuthModal = ({ isOpen, onClose, defaultTab = 'login', onAuthSuccess }: AuthModalProps) => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState(defaultTab);
   
@@ -39,7 +40,7 @@ const AuthModal = ({ isOpen, onClose, defaultTab = 'login' }: AuthModalProps) =>
       title: 'Вход выполнен!',
       description: 'Добро пожаловать на платформу',
     });
-    onClose();
+    onAuthSuccess?.();
   };
 
   const handleRegister = (e: React.FormEvent) => {
@@ -67,7 +68,7 @@ const AuthModal = ({ isOpen, onClose, defaultTab = 'login' }: AuthModalProps) =>
       title: 'Регистрация успешна!',
       description: 'Проверьте email для подтверждения',
     });
-    onClose();
+    onAuthSuccess?.();
   };
 
   return (
